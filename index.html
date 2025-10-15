@@ -850,6 +850,10 @@
                 <span class="nav-tab-icon">📊</span>
                 <span class="nav-tab-text">Estadísticas</span>
             </button>
+            <button class="nav-tab" onclick="switchTab('edu')">
+                <span class="nav-tab-icon">🌿</span>
+                <span class="nav-tab-text">EcoEducación</span>
+            </button>
         </nav>
         
         <!-- Map Content -->
@@ -969,6 +973,39 @@
             <div id="cityStats" class="points-list"></div>
         </div>
         
+        <!-- EcoEducation Content -->
+        <div id="eduContent" class="content">
+            <div class="info-container">
+                <h1 class="info-title">🌍 EcoEducación IFES</h1>
+                <p style="text-align:center; margin-bottom:20px;">
+                    Poné a prueba tus conocimientos ecológicos y descubrí cómo el IFES contribuye al ahorro energético.
+                </p>
+
+                <div id="ecoQuiz" class="residuo-card">
+                    <h3>♻️ EcoQuiz - Desafío Verde</h3>
+                    <p id="quizQuestion" style="font-weight:bold; margin-top:10px;"></p>
+                    <div id="quizOptions" style="margin-top:10px;"></div>
+                    <button onclick="nextQuestion()" style="margin-top:15px; padding:8px 15px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">Siguiente</button>
+                    <p id="quizResult" style="margin-top:10px; font-weight:bold;"></p>
+                </div>
+
+                <div id="greenIfes" class="residuo-card" style="margin-top:25px;">
+                    <h3>☀️ Programa Green IFES Campus</h3>
+                    <p>El IFES promueve una gestión sustentable de residuos que ayuda a reducir el consumo energético del campus.</p>
+                    <div style="margin-top:15px;">
+                        <strong>📊 Datos actuales:</strong><br>
+                        <ul>
+                            <li>Residuos reciclados: <span id="recycledKg">0</span> kg</li>
+                            <li>Energía ahorrada: <span id="energySaved">0</span> kWh</li>
+                            <li>CO₂ evitado: <span id="co2Saved">0</span> kg</li>
+                            <li>Equivalente a plantar 🌳 <span id="treesSaved">0</span> árboles</li>
+                        </ul>
+                    </div>
+                    <button onclick="simulateGreenIfes()" style="margin-top:15px; background:var(--success); color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer;">Actualizar Ahorros</button>
+                </div>
+            </div>
+        </div>
+        
         <!-- Footer Credits -->
         <footer class="footer-credits">
             Integrantes: Bautista Suarez - Isabela Cannizzo - Mauricio Mesa - Francesca Armada
@@ -988,15 +1025,40 @@
         </div>
     </div>
     
-    <!-- Google Maps API -->
+    <!-- Google Maps API and JavaScript -->
     <script>
-        // Data
+        // Global variables
         let points = [];
         let map = null;
         let markers = [];
         let infoWindow = null;
         
-        // Initialize points data (39 total: 10 NQN, 5 PLO, 5 CEN, 5 SEN, 12 PET, 2 IFES)
+        // EcoQuiz variables
+        let currentQ = 0, score = 0;
+        const ecoQuestions = [
+            { 
+                q: "¿Cuál de los siguientes residuos es reciclable?",
+                options: ["Cáscaras de banana", "Botellas plásticas limpias", "Restos de comida cocida"], 
+                correct: 1 
+            },
+            { 
+                q: "¿Qué hacer con el aceite de cocina usado?",
+                options: ["Tirarlo por la pileta", "Reutilizarlo o llevarlo a un punto verde", "Dejarlo enfriar y tirarlo al tacho común"], 
+                correct: 1 
+            },
+            { 
+                q: "¿Qué son los RAEE?",
+                options: ["Residuos Alimentarios Ecológicos", "Residuos de Aparatos Eléctricos y Electrónicos", "Restos Agrícolas y Energéticos"], 
+                correct: 1 
+            },
+            { 
+                q: "¿Qué representa el color verde en los contenedores?",
+                options: ["Vidrio", "Papel y cartón", "Plástico"], 
+                correct: 0 
+            }
+        ];
+        
+        // Initialize points data
         function initializePoints() {
             const wasteTypes = {
                 basic: ["Orgánicos", "Plásticos", "Cartones"],
@@ -1021,7 +1083,7 @@
                         "Baterías": Math.floor(Math.random() * 30) + 10,
                         "Aceite": Math.floor(Math.random() * 30) + 10
                     },
-                    active: true, // Always active
+                    active: true,
                     isIFES: true,
                     isPetStation: false,
                     lastRotation: new Date()
@@ -1085,10 +1147,9 @@
                 {id: "PET012", name: "Alta Barda Este", address: "Costanera - Km 12", lat: -38.9700, lng: -67.9700}
             ];
             
-            // Create all regular points and pet stations
+            // Create all regular points
             [...neuquenLocations, ...plottierLocations, ...centenarioLocations, ...senillosaLocations].forEach((loc, index) => {
                 const types = [...wasteTypes.basic];
-                // Add special waste types to some points
                 if (index % 3 === 0) {
                     types.push(...wasteTypes.special.slice(0, Math.floor(Math.random() * 2) + 1));
                 }
@@ -1115,7 +1176,7 @@
                     ...station,
                     wasteTypes: ["Mascotas"],
                     capacities: {"Mascotas": Math.floor(Math.random() * 60) + 20},
-                    active: true, // Pet stations are always active
+                    active: true,
                     isIFES: false,
                     isPetStation: true,
                     lastRotation: new Date()
@@ -1128,7 +1189,7 @@
             map = new google.maps.Map(document.getElementById('map'), {
                 center: {lat: -38.95, lng: -68.15},
                 zoom: 11,
-                mapTypeId: 'hybrid', // Changed to hybrid to show real streets and satellite
+                mapTypeId: 'hybrid',
                 styles: [
                     {
                         featureType: 'poi.business',
@@ -1180,7 +1241,6 @@
                 let marker;
                 
                 if (point.isIFES) {
-                    // Special marker for IFES stations
                     marker = new google.maps.Marker({
                         position: {lat: point.lat, lng: point.lng},
                         map: map,
@@ -1199,7 +1259,6 @@
                         }
                     });
                 } else if (point.isPetStation) {
-                    // Use custom icon for pet stations
                     marker = new google.maps.Marker({
                         position: {lat: point.lat, lng: point.lng},
                         map: map,
@@ -1307,6 +1366,9 @@
                 renderInfoTab();
             } else if (tab === 'stats') {
                 updateStatistics();
+            } else if (tab === 'edu') {
+                renderQuestion();
+                simulateGreenIfes();
             } else if (tab === 'map' && map) {
                 setTimeout(() => {
                     google.maps.event.trigger(map, 'resize');
@@ -1405,41 +1467,41 @@
                     recomendaciones: "Usar bolsitas biodegradables. Depositar en contenedores especiales de la costanera (cada 1km)."
                 },
                 {
-  tipo: "RAEE",
-  icon: "💻",
-  color: "#00BCD4",
-  descripcion: "Residuos de aparatos eléctricos y electrónicos.",
-  ejemplos: [
-    "Celulares y cargadores viejos",
-    "Computadoras y tablets rotas",
-    "Monitores y cables",
-    "Electrodomésticos pequeños"
-  ],
-  recomendaciones: "Nunca tirarlos a la basura común. Llevá tus RAEE a puntos de reciclaje especializados."
-},
-{
-  tipo: "Composteras",
-  icon: "🌾",
-  color: "#8BC34A",
-  descripcion: "Residuos orgánicos compostables.",
-  ejemplos: [
-    "Restos de frutas y verduras",
-    "Café molido y cáscaras de huevo",
-    "Hojas secas y césped cortado"
-  ],
-  recomendaciones: "Usar composteras domiciliarias o comunitarias. Evitar productos de origen animal."
-},
-{
-  tipo: "Tapitas Solidarias",
-  icon: "🧢",
-  color: "#03A9F4",
-  descripcion: "Tapitas plásticas recolectadas con fines solidarios.",
-  ejemplos: [
-    "Tapitas de gaseosas y agua",
-    "Tapas de detergentes y shampoo"
-  ],
-  recomendaciones: "Llevarlas limpias y secas a los puntos de recolección. Se donan para causas solidarias y hospitales."
-},
+                    tipo: "RAEE",
+                    icon: "💻",
+                    color: "#00BCD4",
+                    descripcion: "Residuos de aparatos eléctricos y electrónicos.",
+                    ejemplos: [
+                        "Celulares y cargadores viejos",
+                        "Computadoras y tablets rotas",
+                        "Monitores y cables",
+                        "Electrodomésticos pequeños"
+                    ],
+                    recomendaciones: "Nunca tirarlos a la basura común. Llevá tus RAEE a puntos de reciclaje especializados."
+                },
+                {
+                    tipo: "Composteras",
+                    icon: "🌾",
+                    color: "#8BC34A",
+                    descripcion: "Residuos orgánicos compostables.",
+                    ejemplos: [
+                        "Restos de frutas y verduras",
+                        "Café molido y cáscaras de huevo",
+                        "Hojas secas y césped cortado"
+                    ],
+                    recomendaciones: "Usar composteras domiciliarias o comunitarias. Evitar productos de origen animal."
+                },
+                {
+                    tipo: "Tapitas Solidarias",
+                    icon: "🧢",
+                    color: "#03A9F4",
+                    descripcion: "Tapitas plásticas recolectadas con fines solidarios.",
+                    ejemplos: [
+                        "Tapitas de gaseosas y agua",
+                        "Tapas de detergentes y shampoo"
+                    ],
+                    recomendaciones: "Llevarlas limpias y secas a los puntos de recolección. Se donan para causas solidarias y hospitales."
+                }
             ];
             
             container.innerHTML = residuosInfo.map(info => `
@@ -1489,7 +1551,7 @@
                 
                 let capacityClass = 'capacity-good';
                 if (point.isIFES) {
-                    capacityClass = 'pet-station'; // Use same golden style
+                    capacityClass = 'pet-station';
                 } else if (point.isPetStation) {
                     capacityClass = 'pet-station';
                 } else if (avgCapacity >= 80) {
@@ -1677,7 +1739,7 @@
         // Simulate capacity updates
         function simulateCapacityUpdate() {
             points.forEach(point => {
-                if (!point.isPetStation && !point.isIFES) { // Don't update pet stations or IFES randomly
+                if (!point.isPetStation && !point.isIFES) {
                     Object.keys(point.capacities).forEach(type => {
                         const change = Math.random() * 10 - 3;
                         point.capacities[type] = Math.max(10, Math.min(95, point.capacities[type] + change));
@@ -1685,7 +1747,7 @@
                 }
             });
             
-            // Occasionally rotate points (not pet stations or IFES)
+            // Occasionally rotate points
             if (Math.random() > 0.9) {
                 const normalPoints = points.filter(p => !p.isPetStation && !p.isIFES);
                 const inactiveCount = Math.floor(Math.random() * 3) + 3;
@@ -1711,143 +1773,86 @@
             }
         }
         
-        <!-- ====================================================== -->
-<!-- 🌱 CARGA UNIFICADA DE INICIALIZACIÓN -->
-<!-- ====================================================== -->
-<script>
-window.onload = function() {
-  // Inicializa puntos y mapa
-  initializePoints();
-
-  // Si Google Maps está listo, inicializa el mapa
-  if (typeof initMap === "function") {
-    setTimeout(() => {
-      initMap();
-    }, 500);
-  }
-
-  // Simula actualizaciones cada 30 segundos
-  setInterval(simulateCapacityUpdate, 30000);
-
-  // Cierra modal al hacer clic fuera
-  document.getElementById('detailModal').addEventListener('click', (e) => {
-    if (e.target.id === 'detailModal') closeModal();
-  });
-
-  // Agrega la pestaña EcoEducación
-  document.querySelector('.nav-tabs').insertAdjacentHTML('beforeend', `
-    <button class="nav-tab" onclick="switchTab('edu')">
-      <span class="nav-tab-icon">🌿</span>
-      <span class="nav-tab-text">EcoEducación</span>
-    </button>
-  `);
-
-  // Inicia el quiz educativo
-  renderQuestion();
-};
-</script>
-
-
-  // Inicializamos preguntas y renderizamos la primera
-  renderQuestion();
-};
-
-// ---------- Contenido educativo dinámico ----------
-function renderQuestion() {
-  const q = ecoQuestions[currentQ];
-  document.getElementById('quizQuestion').innerText = q.q;
-  document.getElementById('quizOptions').innerHTML = q.options
-    .map((opt, i) => `<div><input type='radio' name='opt' value='${i}'> ${opt}</div>`)
-    .join('');
-  document.getElementById('quizResult').innerText = "";
-}
-
-function nextQuestion() {
-  const selected = document.querySelector('input[name="opt"]:checked');
-  if (!selected) return alert("Seleccioná una opción");
-  if (parseInt(selected.value) === ecoQuestions[currentQ].correct) {
-    score++;
-    document.getElementById('quizResult').innerText = "✅ ¡Correcto!";
-  } else {
-    document.getElementById('quizResult').innerText = "❌ Incorrecto.";
-  }
-  currentQ++;
-  if (currentQ < ecoQuestions.length) {
-    setTimeout(renderQuestion, 800);
-  } else {
-    setTimeout(() => {
-      document.getElementById('quizQuestion').innerText = "Resultado final:";
-      document.getElementById('quizOptions').innerHTML = "";
-      document.getElementById('quizResult').innerText =
-        `Tu puntuación verde: ${score}/${ecoQuestions.length} 🌿`;
-      currentQ = 0;
-      score = 0;
-    }, 800);
-  }
-}
-
-// ---------- Variables y preguntas del EcoQuiz ----------
-let currentQ = 0, score = 0;
-const ecoQuestions = [
-  { q: "¿Cuál de los siguientes residuos es reciclable?",
-    options: ["Cáscaras de banana", "Botellas plásticas limpias", "Restos de comida cocida"], correct: 1 },
-  { q: "¿Qué hacer con el aceite de cocina usado?",
-    options: ["Tirarlo por la pileta", "Reutilizarlo o llevarlo a un punto verde", "Dejarlo enfriar y tirarlo al tacho común"], correct: 1 },
-  { q: "¿Qué son los RAEE?",
-    options: ["Residuos Alimentarios Ecológicos", "Residuos de Aparatos Eléctricos y Electrónicos", "Restos Agrícolas y Energéticos"], correct: 1 },
-  { q: "¿Qué representa el color verde en los contenedores?",
-    options: ["Vidrio", "Papel y cartón", "Plástico"], correct: 0 }
-];
-
-// ---------- Módulo Green IFES ----------
-function simulateGreenIfes() {
-  const recycled = Math.floor(Math.random() * 500 + 500);
-  const energy = recycled * 0.75;     // kWh estimado
-  const co2 = recycled * 0.5;         // kg CO₂ evitado
-  const trees = Math.round(co2 / 20); // 1 árbol = 20 kg CO₂/año
-  
-  document.getElementById('recycledKg').innerText = recycled;
-  document.getElementById('energySaved').innerText = energy.toFixed(1);
-  document.getElementById('co2Saved').innerText = co2.toFixed(1);
-  document.getElementById('treesSaved').innerText = trees;
-}
-</script>
-
-<!-- Contenido HTML de la pestaña -->
-<div id="eduContent" class="content">
-  <div class="info-container">
-    <h1 class="info-title">🌍 EcoEducación IFES</h1>
-    <p style="text-align:center; margin-bottom:20px;">
-      Poné a prueba tus conocimientos ecológicos y descubrí cómo el IFES contribuye al ahorro energético.
-    </p>
-
-    <div id="ecoQuiz" class="residuo-card">
-      <h3>♻️ EcoQuiz - Desafío Verde</h3>
-      <p id="quizQuestion" style="font-weight:bold; margin-top:10px;"></p>
-      <div id="quizOptions" style="margin-top:10px;"></div>
-      <button onclick="nextQuestion()" style="margin-top:15px; padding:8px 15px; background:var(--primary); color:white; border:none; border-radius:5px;">Siguiente</button>
-      <p id="quizResult" style="margin-top:10px; font-weight:bold;"></p>
-    </div>
-
-    <div id="greenIfes" class="residuo-card" style="margin-top:25px;">
-      <h3>☀️ Programa Green IFES Campus</h3>
-      <p>El IFES promueve una gestión sustentable de residuos que ayuda a reducir el consumo energético del campus.</p>
-      <div style="margin-top:15px;">
-        <strong>📊 Datos actuales:</strong><br>
-        <ul>
-          <li>Residuos reciclados: <span id="recycledKg">0</span> kg</li>
-          <li>Energía ahorrada: <span id="energySaved">0</span> kWh</li>
-          <li>CO₂ evitado: <span id="co2Saved">0</span> kg</li>
-          <li>Equivalente a plantar 🌳 <span id="treesSaved">0</span> árboles</li>
-        </ul>
-      </div>
-      <button onclick="simulateGreenIfes()" style="margin-top:15px; background:var(--success); color:white; padding:8px 15px; border:none; border-radius:5px;">Actualizar Ahorros</button>
-    </div>
-  </div>
-</div>
-
-</body>
-</html>
-
+        // EcoQuiz functions
+        function renderQuestion() {
+            if (currentQ >= ecoQuestions.length) {
+                currentQ = 0;
+                score = 0;
+            }
+            
+            const q = ecoQuestions[currentQ];
+            document.getElementById('quizQuestion').innerText = q.q;
+            document.getElementById('quizOptions').innerHTML = q.options
+                .map((opt, i) => `<div><input type='radio' name='opt' value='${i}'> ${opt}</div>`)
+                .join('');
+            document.getElementById('quizResult').innerText = "";
+        }
+        
+        function nextQuestion() {
+            const selected = document.querySelector('input[name="opt"]:checked');
+            if (!selected) {
+                alert("Seleccioná una opción");
+                return;
+            }
+            
+            if (parseInt(selected.value) === ecoQuestions[currentQ].correct) {
+                score++;
+                document.getElementById('quizResult').innerText = "✅ ¡Correcto!";
+            } else {
+                document.getElementById('quizResult').innerText = "❌ Incorrecto.";
+            }
+            
+            currentQ++;
+            if (currentQ < ecoQuestions.length) {
+                setTimeout(renderQuestion, 800);
+            } else {
+                setTimeout(() => {
+                    document.getElementById('quizQuestion').innerText = "Resultado final:";
+                    document.getElementById('quizOptions').innerHTML = "";
+                    document.getElementById('quizResult').innerText = 
+                        `Tu puntuación verde: ${score}/${ecoQuestions.length} 🌿`;
+                }, 800);
+            }
+        }
+        
+        // Green IFES simulation
+        function simulateGreenIfes() {
+            const recycled = Math.floor(Math.random() * 500 + 500);
+            const energy = recycled * 0.75;
+            const co2 = recycled * 0.5;
+            const trees = Math.round(co2 / 20);
+            
+            document.getElementById('recycledKg').innerText = recycled;
+            document.getElementById('energySaved').innerText = energy.toFixed(1);
+            document.getElementById('co2Saved').innerText = co2.toFixed(1);
+            document.getElementById('treesSaved').innerText = trees;
+        }
+        
+        // Initialize application
+        window.onload = function() {
+            // Initialize points
+            initializePoints();
+            
+            // Initialize map if Google Maps is loaded
+            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+                setTimeout(() => {
+                    initMap();
+                }, 500);
+            }
+            
+            // Simulate updates every 30 seconds
+            setInterval(simulateCapacityUpdate, 30000);
+            
+            // Close modal on outside click
+            document.getElementById('detailModal').addEventListener('click', (e) => {
+                if (e.target.id === 'detailModal') closeModal();
+            });
+        };
+    </script>
+    
+    <!-- Google Maps API Script -->
+    <script async defer 
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+    </script>
 </body>
 </html>
