@@ -1087,38 +1087,162 @@
         </div>
         
         <!-- EcoEducation Content -->
-        <div id="eduContent" class="content">
-            <div class="info-container">
-                <h1 class="info-title">🌍 EcoEducación IFES</h1>
-                <p style="text-align:center; margin-bottom:20px;">
-                    Poné a prueba tus conocimientos ecológicos y descubrí cómo el IFES contribuye al ahorro energético.
-                </p>
+<div id="eduContent" class="content">
+    <div class="info-container">
+        <h1 class="info-title">🌍 EcoEducación IFES</h1>
+        <p style="text-align:center; margin-bottom:20px;">
+            Poné a prueba tus conocimientos ecológicos y descubrí cómo el IFES contribuye al ahorro energético.
+        </p>
 
-                <div id="ecoQuiz" class="residuo-card">
-                    <h3>♻️ EcoQuiz - Desafío Verde</h3>
-                    <p id="quizQuestion" style="font-weight:bold; margin-top:10px;"></p>
-                    <div id="quizOptions" style="margin-top:10px;"></div>
-                    <button onclick="nextQuestion()" style="margin-top:15px; padding:8px 15px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">Siguiente</button>
-                    <p id="quizResult" style="margin-top:10px; font-weight:bold;"></p>
-                </div>
-
-                <div id="greenIfes" class="residuo-card" style="margin-top:25px;">
-                    <h3>☀️ Programa Green IFES Campus</h3>
-                    <p>El IFES promueve una gestión sustentable de residuos que ayuda a reducir el consumo energético del campus.</p>
-                    <div style="margin-top:15px;">
-                        <strong>📊 Datos actuales:</strong><br>
-                        <ul>
-                            <li>Residuos reciclados: <span id="recycledKg">0</span> kg</li>
-                            <li>Energía ahorrada: <span id="energySaved">0</span> kWh</li>
-                            <li>CO₂ evitado: <span id="co2Saved">0</span> kg</li>
-                            <li>Equivalente a plantar 🌳 <span id="treesSaved">0</span> árboles</li>
-                        </ul>
-                    </div>
-                    <button onclick="simulateGreenIfes()" style="margin-top:15px; background:var(--success); color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer;">Actualizar Ahorros</button>
-                </div>
-            </div>
+        <!-- Bloque EcoQuiz con Misiones -->
+        <div id="ecoQuiz" class="residuo-card">
+            <h3>♻️ EcoQuiz - Desafío Verde</h3>
+            
+            <div id="savedMission"></div>
+            
+            <p id="quizQuestion" style="font-weight:bold; margin-top:10px;"></p>
+            <div id="quizOptions" style="margin-top:10px;"></div>
+            <button onclick="nextQuestion()" 
+                style="margin-top:15px; padding:8px 15px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">
+                Siguiente
+            </button>
+            <p id="quizResult" style="margin-top:10px; font-weight:bold;"></p>
         </div>
-        
+
+        <div id="greenIfes" class="residuo-card" style="margin-top:25px;">
+            <h3>☀️ Programa Green IFES Campus</h3>
+            <p>El IFES promueve una gestión sustentable de residuos que ayuda a reducir el consumo energético del campus.</p>
+            <div style="margin-top:15px;">
+                <strong>📊 Datos actuales:</strong><br>
+                <ul>
+                    <li>Residuos reciclados: <span id="recycledKg">0</span> kg</li>
+                    <li>Energía ahorrada: <span id="energySaved">0</span> kWh</li>
+                    <li>CO₂ evitado: <span id="co2Saved">0</span> kg</li>
+                    <li>Equivalente a plantar 🌳 <span id="treesSaved">0</span> árboles</li>
+                </ul>
+            </div>
+            <button onclick="simulateGreenIfes()" 
+                style="margin-top:15px; background:var(--success); color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer;">
+                Actualizar Ahorros
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ===============================
+// 🧩 ECOQUIZ + MISIONES VERDES
+// ===============================
+let currentQ = 0, score = 0;
+
+const ecoQuestions = [
+  { q: "¿Cuál de los siguientes residuos es reciclable?",
+    options: ["Cáscaras de banana", "Botellas plásticas limpias", "Restos de comida cocida"],
+    correct: 1 },
+  { q: "¿Qué hacer con el aceite de cocina usado?",
+    options: ["Tirarlo por la pileta", "Reutilizarlo o llevarlo a un punto verde", "Dejarlo enfriar y tirarlo al tacho común"],
+    correct: 1 },
+  { q: "¿Qué son los RAEE?",
+    options: ["Residuos Alimentarios Ecológicos", "Residuos de Aparatos Eléctricos y Electrónicos", "Restos Agrícolas y Energéticos"],
+    correct: 1 },
+  { q: "¿Qué representa el color verde en los contenedores?",
+    options: ["Vidrio", "Papel y cartón", "Plástico"],
+    correct: 0 }
+];
+
+// Cargar misión previa (si existe)
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("lastMission");
+  if (saved) {
+    const note = document.createElement('p');
+    note.style.background = "#FFF8E1";
+    note.style.padding = "10px";
+    note.style.borderRadius = "5px";
+    note.style.marginBottom = "10px";
+    note.innerHTML = `🌿 <strong>Misión pendiente:</strong> ${saved}`;
+    document.getElementById("savedMission").appendChild(note);
+  }
+});
+
+// Renderizar pregunta
+function renderQuestion() {
+  if (currentQ >= ecoQuestions.length) {
+    currentQ = 0;
+    score = 0;
+  }
+
+  const q = ecoQuestions[currentQ];
+  document.getElementById('quizQuestion').innerText = q.q;
+  document.getElementById('quizOptions').innerHTML = q.options
+    .map((opt, i) => `<div><input type='radio' name='opt' value='${i}'> ${opt}</div>`)
+    .join('');
+  document.getElementById('quizResult').innerText = "";
+}
+
+// Siguiente pregunta o resultado
+function nextQuestion() {
+  const selected = document.querySelector('input[name="opt"]:checked');
+  if (!selected) {
+    alert("Seleccioná una opción");
+    return;
+  }
+
+  if (parseInt(selected.value) === ecoQuestions[currentQ].correct) {
+    score++;
+    document.getElementById('quizResult').innerText = "✅ ¡Correcto!";
+  } else {
+    document.getElementById('quizResult').innerText = "❌ Incorrecto.";
+  }
+
+  currentQ++;
+  if (currentQ < ecoQuestions.length) {
+    setTimeout(renderQuestion, 800);
+  } else {
+    setTimeout(() => {
+      document.getElementById('quizQuestion').innerText = "Resultado final:";
+      document.getElementById('quizOptions').innerHTML = "";
+      document.getElementById('quizResult').innerText = 
+          `Tu puntuación verde: ${score}/${ecoQuestions.length} 🌿`;
+
+      // Misión verde aleatoria
+      const ecoMissions = [
+        "🌱 Plantá un árbol o cuidá una planta durante una semana.",
+        "🚶 Llevá tus residuos reciclables al EcoPunto más cercano.",
+        "💧 Cerrá la canilla mientras te cepillás los dientes (¡ahorrás 12 litros!).",
+        "⚡ Apagá luces y dispositivos cuando no los uses.",
+        "🗑️ Clasificá correctamente tus residuos en casa por 3 días.",
+        "🐾 Cuidá los espacios públicos y juntá los residuos de tu mascota.",
+        "📚 Enseñale a un amigo cómo usar EcoPuntos IFES."
+      ];
+
+      const randomMission = ecoMissions[Math.floor(Math.random() * ecoMissions.length)];
+
+      const missionBlock = document.createElement('div');
+      missionBlock.style.marginTop = "15px";
+      missionBlock.style.padding = "15px";
+      missionBlock.style.background = "#E8F5E9";
+      missionBlock.style.borderRadius = "8px";
+      missionBlock.style.textAlign = "center";
+      missionBlock.innerHTML = `
+        <h4 style="color:#2E7D32; margin-bottom:8px;">🌿 Misión Verde IFES</h4>
+        <p>${randomMission}</p>
+        <button onclick="saveMission('${randomMission}')" 
+                style="margin-top:10px; padding:8px 15px; background:#2E7D32; color:white; border:none; border-radius:5px; cursor:pointer;">
+          ✅ Aceptar Misión
+        </button>
+      `;
+      document.getElementById('ecoQuiz').appendChild(missionBlock);
+    }, 800);
+  }
+}
+
+// Guardar misión en localStorage
+function saveMission(mission) {
+  localStorage.setItem("lastMission", mission);
+  alert("🌱 Misión aceptada. ¡Podrás verla en tu próxima visita!");
+}
+</script>
+
         <!-- Footer Credits -->
         <footer class="footer-credits">
             Integrantes: Bautista Suarez - Isabela Cannizzo - Mauricio Mesa - Francesca Armada
