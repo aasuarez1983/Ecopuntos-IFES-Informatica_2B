@@ -1,0 +1,1702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>EcoPuntos - Gestión de Residuos - IFES Nqn</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2E7D32;
+            --primary-dark: #1B5E20;
+            --primary-light: #4CAF50;
+            --secondary: #FFD700;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --info: #2196F3;
+            --dark: #212121;
+            --light: #FAFAFA;
+            --gray: #9E9E9E;
+            --purple: #9C27B0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .app-container {
+            max-width: 100%;
+            min-height: 100vh;
+            background: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 0.75rem 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Logo EcoPuntos */
+        .logo-ecopuntos {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .eco-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            border: 2px solid var(--primary);
+        }
+        
+        .eco-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .eco-text-main {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-light);
+            line-height: 1.2;
+        }
+        
+        .eco-text-sub {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.2;
+        }
+        
+        /* Título Central */
+        .header-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        /* Logo IFES */
+        .logo-ifes {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo-sun {
+            width: 40px;
+            height: 40px;
+            position: relative;
+        }
+        
+        .logo-sun svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-text-main {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .logo-text-sub {
+            font-size: 0.7rem;
+            color: #666;
+        }
+        
+        .logo-years {
+            background: var(--secondary);
+            color: white;
+            padding: 0.3rem 0.5rem;
+            border-radius: 50%;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-years-number {
+            font-size: 1rem;
+            line-height: 1;
+        }
+        
+        .logo-years-text {
+            font-size: 0.5rem;
+        }
+        
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 70px;
+            z-index: 999;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background: white;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .nav-tab:hover {
+            background: var(--light);
+        }
+        
+        .nav-tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            background: var(--light);
+        }
+        
+        .nav-tab-icon {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-tab-text {
+            font-size: 0.875rem;
+        }
+        
+        /* Content Sections */
+        .content {
+            display: none;
+            padding: 1rem;
+            animation: fadeIn 0.3s;
+            flex: 1;
+        }
+        
+        .content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Map Container */
+        #map {
+            height: calc(100vh - 220px);
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        /* Map Legend */
+        .map-legend {
+            position: absolute;
+            bottom: 60px;
+            right: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 500;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            font-size: 0.8rem;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        /* Footer Credits */
+        .footer-credits {
+            background: #E8F5E9;
+            padding: 0.75rem;
+            text-align: center;
+            color: black;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-top: 2px solid var(--primary-light);
+            margin-top: auto;
+        }
+        
+        /* Points List */
+        .points-list {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-bottom: 60px;
+        }
+        
+        .filter-section {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-bottom: 0.25rem;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Point Cards */
+        .point-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border-left: 5px solid transparent;
+        }
+        
+        .point-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .point-card.inactive {
+            opacity: 0.6;
+            background: #f5f5f5;
+            border-left-color: var(--gray);
+        }
+        
+        .point-card.capacity-good {
+            border-left-color: var(--success);
+        }
+        
+        .point-card.capacity-medium {
+            border-left-color: var(--warning);
+        }
+        
+        .point-card.capacity-full {
+            border-left-color: var(--danger);
+        }
+        
+        .point-card.pet-station {
+            border-left-color: var(--purple);
+        }
+        
+        .point-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .point-title {
+            flex: 1;
+        }
+        
+        .point-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+        
+        .point-address {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+        
+        .point-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-active {
+            background: var(--success);
+            color: white;
+        }
+        
+        .status-inactive {
+            background: var(--gray);
+            color: white;
+        }
+        
+        .waste-types {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .waste-type {
+            padding: 0.25rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .waste-type.organic { background: #E8F5E9; color: #2E7D32; }
+        .waste-type.plastic { background: #E3F2FD; color: #1976D2; }
+        .waste-type.paper { background: #EFEBE9; color: #5D4037; }
+        .waste-type.battery { background: #FFEBEE; color: #C62828; }
+        .waste-type.oil { background: #FFF8E1; color: #F57C00; }
+        .waste-type.pet { background: #F3E5F5; color: #7B1FA2; }
+        
+        /* Info Tab Styles */
+        .info-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .info-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+        
+        .residuo-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .residuo-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .residuo-icon {
+            font-size: 2rem;
+        }
+        
+        .residuo-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        
+        .residuo-color-indicator {
+            width: 10px;
+            height: 60px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        
+        .residuo-content {
+            padding-left: 20px;
+        }
+        
+        .residuo-description {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .residuo-examples {
+            margin-top: 10px;
+        }
+        
+        .residuo-examples h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .residuo-examples ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .residuo-examples li {
+            margin: 5px 0;
+        }
+        
+        .residuo-recommendations {
+            background: #F5F5F5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .residuo-recommendations h4 {
+            color: var(--warning);
+            margin-bottom: 5px;
+        }
+        
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+        }
+        
+        .capacity-section {
+            margin-top: 1rem;
+        }
+        
+        .capacity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .capacity-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+        
+        .capacity-value {
+            font-size: 0.875rem;
+            font-weight: bold;
+        }
+        
+        .capacity-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .capacity-fill {
+            height: 100%;
+            transition: width 0.3s;
+            border-radius: 4px;
+        }
+        
+        .capacity-good { background: var(--success); }
+        .capacity-medium { background: var(--warning); }
+        .capacity-full { background: var(--danger); }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: center;
+            }
+            
+            .header-title {
+                order: 2;
+                font-size: 1rem;
+            }
+            
+            .logo-ecopuntos {
+                order: 1;
+                padding: 0.3rem 0.5rem;
+            }
+            
+            .logo-ifes {
+                order: 3;
+                padding: 0.3rem 0.5rem;
+            }
+            
+            .eco-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 20px;
+            }
+            
+            .eco-text-main {
+                font-size: 1rem;
+            }
+            
+            .eco-text-sub {
+                font-size: 0.8rem;
+            }
+            
+            .logo-sun {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .nav-tab-text {
+                display: none;
+            }
+            
+            .nav-tabs {
+                position: fixed;
+                bottom: 30px;
+                top: auto;
+                z-index: 1001;
+            }
+            
+            #map {
+                height: calc(100vh - 200px);
+            }
+            
+            .content {
+                padding-bottom: 110px;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                width: 100%;
+            }
+            
+            .map-legend {
+                bottom: 110px;
+                transform: scale(0.9);
+            }
+            
+            .footer-credits {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 1002;
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
+        }
+        
+        /* Google Maps InfoWindow Custom Styles */
+        .gm-style-iw {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .info-window-content {
+            padding: 10px;
+            min-width: 250px;
+        }
+        
+        .info-window-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2E7D32;
+        }
+        
+        .info-window-detail {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        
+        .info-window-capacity {
+            margin: 10px 0;
+        }
+        
+        .info-window-button {
+            background: #2E7D32;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .info-window-button:hover {
+            background: #1B5E20;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <!-- Logo EcoPuntos Neuquén -->
+                <div class="logo-ecopuntos">
+                    <div class="eco-icon">♻️</div>
+                    <div class="eco-text">
+                        <div class="eco-text-main">EcoPuntos</div>
+                        <div class="eco-text-sub">Neuquén</div>
+                    </div>
+                </div>
+                
+                <!-- Título Central -->
+                <div class="header-title">
+                    Informática 2°B
+                </div>
+                
+                <!-- Logo IFES -->
+                <div class="logo-ifes">
+                    <div class="logo-sun">
+                        <svg viewBox="0 0 40 40">
+                            <circle cx="20" cy="20" r="18" fill="#FFD700"/>
+                            <g transform="translate(20,20)">
+                                <path d="M0,0 L-5,-15 L5,-15 Z" fill="#FFD700" transform="rotate(0)"/>
+                                <path d="M0,0 L-5,-15 L5,-15 Z" fill="#FFD700" transform="rotate(45)"/>
+                                <path d="M0,0 L-5,-15 L5,-15 Z" fill="#FFD700" transform="rotate(90)"/>
+                                <path d="M0,0 L-5,-15 L5,-15 Z" fill="#FFD700" transform="rotate(135)"/>
+                                <path d="M0,0 L-5,-15 L5,-15 Z" fill="#FFD700" transform="rotate(180)"/>
+                                <path d="M0,0 L-5,-15 L5,-15 Z" fill="#FFD700" transform="rotate(225)"/>
+                                <path d="M0,0 L-5,-15 L5,-15 Z" fill="#FFD700" transform="rotate(270)"/>
+                                <path d="M0,0 L-5,-15 L5,-15 Z" fill="#FFD700" transform="rotate(315)"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="logo-text">
+                        <div class="logo-text-main">IFES</div>
+                        <div class="logo-text-sub">EDUCACIÓN</div>
+                    </div>
+                    <div class="logo-years">
+                        <div class="logo-years-number">30</div>
+                        <div class="logo-years-text">AÑOS</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('map')">
+                <span class="nav-tab-icon">🗺️</span>
+                <span class="nav-tab-text">Mapa</span>
+            </button>
+            <button class="nav-tab" onclick="switchTab('list')">
+                <span class="nav-tab-icon">📍</span>
+                <span class="nav-tab-text">Puntos</span>
+            </button>
+            <button class="nav-tab" onclick="switchTab('info')">
+                <span class="nav-tab-icon">ℹ️</span>
+                <span class="nav-tab-text">Info</span>
+            </button>
+            <button class="nav-tab" onclick="switchTab('stats')">
+                <span class="nav-tab-icon">📊</span>
+                <span class="nav-tab-text">Estadísticas</span>
+            </button>
+        </nav>
+        
+        <!-- Map Content -->
+        <div id="mapContent" class="content active">
+            <div id="map"></div>
+            <div class="map-legend">
+                <div class="legend-title">Capacidad Disponible</div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #4CAF50;"></div>
+                    <span>&gt; 70% libre</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #8BC34A;"></div>
+                    <span>50-70% libre</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FFC107;"></div>
+                    <span>30-50% libre</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #FF9800;"></div>
+                    <span>15-30% libre</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #F44336;"></div>
+                    <span>&lt; 15% libre</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #9E9E9E;"></div>
+                    <span>Inactivo</span>
+                </div>
+                <div class="legend-item">
+                    <span style="font-size: 1.2rem;">🐾</span>
+                    <span style="margin-left: 8px;">Mascotas</span>
+                </div>
+                <div class="legend-item">
+                    <span style="font-size: 1.2rem;">⭐</span>
+                    <span style="margin-left: 8px;">IFES Principal</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- List Content -->
+        <div id="listContent" class="content">
+            <div class="points-list">
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Localidad</label>
+                            <select id="localityFilter" onchange="filterPoints()">
+                                <option value="all">Todas</option>
+                                <option value="IFES">IFES Principal (2)</option>
+                                <option value="NQN">Neuquén Capital (10)</option>
+                                <option value="PLO">Plottier (5)</option>
+                                <option value="CEN">Centenario (5)</option>
+                                <option value="SEN">Senillosa (5)</option>
+                                <option value="PET">Costanera - Mascotas (12)</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Tipo de Residuo</label>
+                            <select id="wasteFilter" onchange="filterPoints()">
+                                <option value="all">Todos</option>
+                                <option value="Orgánicos">Orgánicos</option>
+                                <option value="Plásticos">Plásticos</option>
+                                <option value="Cartones">Cartones</option>
+                                <option value="Baterías">Baterías</option>
+                                <option value="Aceite">Aceite</option>
+                                <option value="Mascotas">Mascotas</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="availableFilter" onchange="filterPoints()">
+                                <span>Solo con capacidad > 50%</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div id="pointsList"></div>
+            </div>
+        </div>
+        
+        <!-- Info Content -->
+        <div id="infoContent" class="content">
+            <div class="info-container">
+                <h1 class="info-title">📚 Guía de Clasificación de Residuos</h1>
+                <div id="residuosInfo"></div>
+            </div>
+        </div>
+        
+        <!-- Statistics Content -->
+        <div id="statsContent" class="content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📍</div>
+                    <div class="stat-value" id="totalPoints">39</div>
+                    <div class="stat-label">Puntos Totales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="activePoints">32</div>
+                    <div class="stat-label">Puntos Activos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="avgCapacity">65%</div>
+                    <div class="stat-label">Capacidad Promedio Libre</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-value" id="criticalPoints">3</div>
+                    <div class="stat-label">Puntos Críticos</div>
+                </div>
+            </div>
+            
+            <div id="cityStats" class="points-list"></div>
+        </div>
+        
+        <!-- Footer Credits -->
+        <footer class="footer-credits">
+            Integrantes: Bautista Suarez - Isabela Cannizzo - Mauricio Mesa - Francesca Armada
+        </footer>
+        
+        <!-- Detail Modal -->
+        <div id="detailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalTitle">Detalles del Punto</h2>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Google Maps API -->
+    <script>
+        // Data
+        let points = [];
+        let map = null;
+        let markers = [];
+        let infoWindow = null;
+        
+        // Initialize points data (39 total: 10 NQN, 5 PLO, 5 CEN, 5 SEN, 12 PET, 2 IFES)
+        function initializePoints() {
+            const wasteTypes = {
+                basic: ["Orgánicos", "Plásticos", "Cartones"],
+                special: ["Baterías", "Aceite"]
+            };
+            
+            // IFES Principal Stations (2)
+            const ifesStations = [
+                {id: "IFES001", name: "IFES Neuquén - Estación Principal", address: "Leloir 721, Neuquén", lat: -38.9555, lng: -68.0628},
+                {id: "IFES002", name: "IFES Plottier - Estación Principal", address: "Av. San Martín 485, Plottier", lat: -38.9495, lng: -68.2360}
+            ];
+            
+            // Add IFES stations with all waste types
+            ifesStations.forEach(station => {
+                points.push({
+                    ...station,
+                    wasteTypes: [...wasteTypes.basic, ...wasteTypes.special],
+                    capacities: {
+                        "Orgánicos": Math.floor(Math.random() * 30) + 10,
+                        "Plásticos": Math.floor(Math.random() * 30) + 10,
+                        "Cartones": Math.floor(Math.random() * 30) + 10,
+                        "Baterías": Math.floor(Math.random() * 30) + 10,
+                        "Aceite": Math.floor(Math.random() * 30) + 10
+                    },
+                    active: true, // Always active
+                    isIFES: true,
+                    isPetStation: false,
+                    lastRotation: new Date()
+                });
+            });
+            
+            // Neuquén Capital points (10)
+            const neuquenLocations = [
+                {id: "NQN001", name: "Centro - Plaza Roca", address: "Av. Argentina y Roca", lat: -38.9516, lng: -68.0591},
+                {id: "NQN002", name: "Centro - Municipalidad", address: "Av. Argentina 308", lat: -38.9533, lng: -68.0605},
+                {id: "NQN003", name: "Alto Comahue", address: "Ruta 22 y Lanín", lat: -38.9311, lng: -68.0822},
+                {id: "NQN004", name: "Barrio Confluencia", address: "Alderete y Planas", lat: -38.9667, lng: -68.0444},
+                {id: "NQN005", name: "Parque Industrial", address: "Colón 3500", lat: -38.9744, lng: -68.0744},
+                {id: "NQN006", name: "Universidad Nacional", address: "Buenos Aires 1400", lat: -38.9861, lng: -68.0594},
+                {id: "NQN007", name: "Barrio Santa Genoveva", address: "Santa Fe y Saturnino Torres", lat: -38.9722, lng: -68.0333},
+                {id: "NQN008", name: "Barrio Belgrano", address: "Belgrano y San Juan", lat: -38.9444, lng: -68.0666},
+                {id: "NQN009", name: "Barrio Sapere", address: "Copahue y Tronador", lat: -38.9833, lng: -68.0833},
+                {id: "NQN010", name: "Terminal de Ómnibus", address: "Planas 4751", lat: -38.9789, lng: -68.0456}
+            ];
+            
+            // Plottier points (5)
+            const plottierLocations = [
+                {id: "PLO001", name: "Plottier Centro", address: "Plottier - Rivadavia 125", lat: -38.9489, lng: -68.2333},
+                {id: "PLO002", name: "Plottier Oeste", address: "Plottier - Los Manzanos", lat: -38.9556, lng: -68.2444},
+                {id: "PLO003", name: "Plottier Norte", address: "Plottier - Ruta 22 Km 1215", lat: -38.9420, lng: -68.2280},
+                {id: "PLO004", name: "Plottier Este", address: "Plottier - Calle 9 de Julio", lat: -38.9510, lng: -68.2290},
+                {id: "PLO005", name: "Plottier Sur", address: "Plottier - Av. San Martín", lat: -38.9580, lng: -68.2380}
+            ];
+            
+            // Centenario points (5)
+            const centenarioLocations = [
+                {id: "CEN001", name: "Centenario Centro", address: "Centenario - San Martín 567", lat: -38.8294, lng: -68.1322},
+                {id: "CEN002", name: "Centenario Este", address: "Centenario - Canadá y Polonia", lat: -38.8344, lng: -68.1244},
+                {id: "CEN003", name: "Centenario Oeste", address: "Centenario - Av. Neuquén", lat: -38.8280, lng: -68.1380},
+                {id: "CEN004", name: "Centenario Norte", address: "Centenario - Los Álamos", lat: -38.8250, lng: -68.1300},
+                {id: "CEN005", name: "Centenario Sur", address: "Centenario - Ruta 7", lat: -38.8350, lng: -68.1350}
+            ];
+            
+            // Senillosa points (5)
+            const senillosaLocations = [
+                {id: "SEN001", name: "Senillosa Centro", address: "Senillosa - Av. Argentina 234", lat: -39.0142, lng: -68.4328},
+                {id: "SEN002", name: "Senillosa Norte", address: "Senillosa - Ruta 8 Norte", lat: -39.0080, lng: -68.4280},
+                {id: "SEN003", name: "Senillosa Sur", address: "Senillosa - Ruta 8 Sur", lat: -39.0200, lng: -68.4380},
+                {id: "SEN004", name: "Senillosa Este", address: "Senillosa - Calle Roca", lat: -39.0150, lng: -68.4250},
+                {id: "SEN005", name: "Senillosa Oeste", address: "Senillosa - Barrio Nuevo", lat: -39.0130, lng: -68.4400}
+            ];
+            
+            // Pet waste stations along the coast (12 points, 1km apart)
+            const petStations = [
+                {id: "PET001", name: "Costanera Plottier Inicio", address: "Costanera - Km 1", lat: -38.9480, lng: -68.2350},
+                {id: "PET002", name: "Costanera Plottier Centro", address: "Costanera - Km 2", lat: -38.9500, lng: -68.2200},
+                {id: "PET003", name: "Costanera Limay Oeste", address: "Costanera - Km 3", lat: -38.9520, lng: -68.1950},
+                {id: "PET004", name: "Costanera Limay Centro", address: "Costanera - Km 4", lat: -38.9540, lng: -68.1700},
+                {id: "PET005", name: "Costanera Neuquén Inicio", address: "Costanera - Km 5", lat: -38.9560, lng: -68.1450},
+                {id: "PET006", name: "Balcón del Valle", address: "Costanera - Km 6", lat: -38.9580, lng: -68.1200},
+                {id: "PET007", name: "Costanera Neuquén Centro", address: "Costanera - Km 7", lat: -38.9600, lng: -68.0950},
+                {id: "PET008", name: "Paseo de la Costa", address: "Costanera - Km 8", lat: -38.9620, lng: -68.0700},
+                {id: "PET009", name: "Costanera Este", address: "Costanera - Km 9", lat: -38.9640, lng: -68.0450},
+                {id: "PET010", name: "Costanera Alta Barda", address: "Costanera - Km 10", lat: -38.9660, lng: -68.0200},
+                {id: "PET011", name: "Alta Barda Oeste", address: "Costanera - Km 11", lat: -38.9680, lng: -67.9950},
+                {id: "PET012", name: "Alta Barda Este", address: "Costanera - Km 12", lat: -38.9700, lng: -67.9700}
+            ];
+            
+            // Create all regular points and pet stations
+            [...neuquenLocations, ...plottierLocations, ...centenarioLocations, ...senillosaLocations].forEach((loc, index) => {
+                const types = [...wasteTypes.basic];
+                // Add special waste types to some points
+                if (index % 3 === 0) {
+                    types.push(...wasteTypes.special.slice(0, Math.floor(Math.random() * 2) + 1));
+                }
+                
+                const capacities = {};
+                types.forEach(type => {
+                    capacities[type] = Math.floor(Math.random() * 60) + 20;
+                });
+                
+                points.push({
+                    ...loc,
+                    wasteTypes: types,
+                    capacities: capacities,
+                    active: Math.random() > 0.15,
+                    isIFES: false,
+                    isPetStation: false,
+                    lastRotation: new Date()
+                });
+            });
+            
+            // Create pet waste stations
+            petStations.forEach(station => {
+                points.push({
+                    ...station,
+                    wasteTypes: ["Mascotas"],
+                    capacities: {"Mascotas": Math.floor(Math.random() * 60) + 20},
+                    active: true, // Pet stations are always active
+                    isIFES: false,
+                    isPetStation: true,
+                    lastRotation: new Date()
+                });
+            });
+        }
+        
+        // Initialize Google Map
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: -38.95, lng: -68.15},
+                zoom: 11,
+                mapTypeId: 'hybrid', // Changed to hybrid to show real streets and satellite
+                styles: [
+                    {
+                        featureType: 'poi.business',
+                        elementType: 'labels',
+                        stylers: [{visibility: 'off'}]
+                    }
+                ],
+                zoomControl: true,
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                    mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain'],
+                    position: google.maps.ControlPosition.TOP_LEFT
+                },
+                streetViewControl: true,
+                fullscreenControl: true
+            });
+            
+            infoWindow = new google.maps.InfoWindow();
+            
+            updateMapMarkers();
+        }
+        
+        // Get marker color based on capacity
+        function getMarkerColor(point) {
+            if (!point.active && !point.isPetStation) return '#9E9E9E';
+            if (point.isPetStation) return '#9C27B0';
+            
+            const avgCapacity = Object.values(point.capacities).reduce((a, b) => a + b, 0) / Object.keys(point.capacities).length;
+            
+            if (avgCapacity < 30) return '#4CAF50';
+            else if (avgCapacity < 50) return '#8BC34A';
+            else if (avgCapacity < 70) return '#FFC107';
+            else if (avgCapacity < 85) return '#FF9800';
+            else return '#F44336';
+        }
+        
+        // Update map markers
+        function updateMapMarkers() {
+            // Clear existing markers
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+            
+            // Add markers for each point
+            points.forEach(point => {
+                const avgCapacity = Object.values(point.capacities).reduce((a, b) => a + b, 0) / Object.keys(point.capacities).length;
+                const freeCapacity = 100 - avgCapacity;
+                
+                let marker;
+                
+                if (point.isIFES) {
+                    // Special marker for IFES stations
+                    marker = new google.maps.Marker({
+                        position: {lat: point.lat, lng: point.lng},
+                        map: map,
+                        title: point.name,
+                        label: {
+                            text: '⭐',
+                            fontSize: '20px'
+                        },
+                        icon: {
+                            path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                            fillColor: '#FFD700',
+                            fillOpacity: 1,
+                            strokeColor: '#FF8C00',
+                            strokeWeight: 3,
+                            scale: 15
+                        }
+                    });
+                } else if (point.isPetStation) {
+                    // Use custom icon for pet stations
+                    marker = new google.maps.Marker({
+                        position: {lat: point.lat, lng: point.lng},
+                        map: map,
+                        title: point.name,
+                        label: {
+                            text: '🐾',
+                            fontSize: '16px'
+                        },
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            fillColor: '#9C27B0',
+                            fillOpacity: 0.9,
+                            strokeColor: 'white',
+                            strokeWeight: 2,
+                            scale: 10
+                        }
+                    });
+                } else {
+                    const color = getMarkerColor(point);
+                    marker = new google.maps.Marker({
+                        position: {lat: point.lat, lng: point.lng},
+                        map: map,
+                        title: point.name,
+                        label: {
+                            text: point.id.slice(-2),
+                            color: 'white',
+                            fontSize: '10px',
+                            fontWeight: 'bold'
+                        },
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            fillColor: color,
+                            fillOpacity: 0.9,
+                            strokeColor: 'white',
+                            strokeWeight: 2,
+                            scale: point.id.startsWith('NQN') ? 14 : 12
+                        }
+                    });
+                }
+                
+                // Add click listener for info window
+                marker.addListener('click', () => {
+                    const icon = point.isIFES ? '⭐' : (point.isPetStation ? '🐾' : '📍');
+                    const content = `
+                        <div class="info-window-content">
+                            <div class="info-window-title">${icon} ${point.name}</div>
+                            <div class="info-window-detail">📌 ${point.address}</div>
+                            <div class="info-window-detail">
+                                <strong>Estado:</strong> ${point.active ? '✅ Activo' : '❌ Inactivo'}
+                            </div>
+                            <div class="info-window-capacity">
+                                <strong>Capacidad libre:</strong> ${freeCapacity.toFixed(1)}%
+                                <div class="capacity-bar" style="margin-top: 5px;">
+                                    <div class="capacity-fill ${freeCapacity > 70 ? 'capacity-good' : freeCapacity > 30 ? 'capacity-medium' : 'capacity-full'}" 
+                                         style="width: ${freeCapacity}%"></div>
+                                </div>
+                            </div>
+                            <div class="info-window-detail">
+                                <strong>Acepta:</strong><br>
+                                ${point.wasteTypes.map(type => getWasteIcon(type) + ' ' + type).join('<br>')}
+                            </div>
+                            ${point.isIFES ? '<div style="color: #FFD700; margin-top: 10px; font-weight: bold;">⭐ Estación Principal de Logística IFES</div>' : ''}
+                            ${point.isPetStation ? '<div style="color: #9C27B0; margin-top: 10px;">🐾 Estación especial para residuos de mascotas</div>' : ''}
+                            <button class="info-window-button" onclick="showPointDetail('${point.id}')">
+                                Ver Detalles Completos
+                            </button>
+                        </div>
+                    `;
+                    
+                    infoWindow.setContent(content);
+                    infoWindow.open(map, marker);
+                });
+                
+                markers.push(marker);
+            });
+        }
+        
+        // Get waste icon
+        function getWasteIcon(type) {
+            const icons = {
+                'Orgánicos': '🌱',
+                'Plásticos': '♻️',
+                'Cartones': '📦',
+                'Baterías': '🔋',
+                'Aceite': '🛢️',
+                'Mascotas': '🐾'
+            };
+            return icons[type] || '🗑️';
+        }
+        
+        // Switch tabs
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.nav-tab').classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab + 'Content').classList.add('active');
+            
+            // Initialize content if needed
+            if (tab === 'list') {
+                renderPointsList();
+            } else if (tab === 'info') {
+                renderInfoTab();
+            } else if (tab === 'stats') {
+                updateStatistics();
+            } else if (tab === 'map' && map) {
+                setTimeout(() => {
+                    google.maps.event.trigger(map, 'resize');
+                    const center = {lat: -38.95, lng: -68.15};
+                    map.setCenter(center);
+                }, 100);
+            }
+        }
+        
+        // Render information tab
+        function renderInfoTab() {
+            const container = document.getElementById('residuosInfo');
+            
+            const residuosInfo = [
+                {
+                    tipo: "Orgánicos",
+                    icon: "🌱",
+                    color: "#4CAF50",
+                    descripcion: "Residuos biodegradables de origen vegetal o animal",
+                    ejemplos: [
+                        "Restos de comida",
+                        "Cáscaras de frutas y verduras",
+                        "Residuos de jardín (hojas, ramas pequeñas)",
+                        "Papel y cartón sucios",
+                        "Servilletas usadas"
+                    ],
+                    recomendaciones: "Depositar en bolsas biodegradables. Ideal para compostaje."
+                },
+                {
+                    tipo: "Plásticos",
+                    icon: "♻️",
+                    color: "#2196F3",
+                    descripcion: "Materiales plásticos reciclables",
+                    ejemplos: [
+                        "Botellas PET",
+                        "Envases de productos de limpieza",
+                        "Bolsas plásticas limpias",
+                        "Tuppers y contenedores",
+                        "Tapas y tapones plásticos"
+                    ],
+                    recomendaciones: "Lavar y secar antes de desechar. Comprimir para ahorrar espacio."
+                },
+                {
+                    tipo: "Cartones",
+                    icon: "📦",
+                    color: "#795548",
+                    descripcion: "Papel y cartón limpios y secos",
+                    ejemplos: [
+                        "Cajas de cartón",
+                        "Periódicos y revistas",
+                        "Papel de oficina",
+                        "Cartones de huevos",
+                        "Tubos de papel higiénico"
+                    ],
+                    recomendaciones: "Plegar las cajas. No incluir papel encerado o plastificado."
+                },
+                {
+                    tipo: "Baterías",
+                    icon: "🔋",
+                    color: "#FF5722",
+                    descripcion: "Pilas y baterías de todo tipo",
+                    ejemplos: [
+                        "Pilas AA, AAA, C, D",
+                        "Baterías de celulares",
+                        "Pilas de relojes",
+                        "Baterías de laptops",
+                        "Pilas recargables"
+                    ],
+                    recomendaciones: "¡PELIGROSO! Nunca mezclar con otros residuos. Requiere tratamiento especial."
+                },
+                {
+                    tipo: "Aceite",
+                    icon: "🛢️",
+                    color: "#FFC107",
+                    descripcion: "Aceites usados de cocina y motor",
+                    ejemplos: [
+                        "Aceite de cocina usado",
+                        "Aceite de motor",
+                        "Grasas de cocina",
+                        "Aceites industriales",
+                        "Lubricantes"
+                    ],
+                    recomendaciones: "Guardar en botellas cerradas. NUNCA verter por el desagüe."
+                },
+                {
+                    tipo: "Mascotas",
+                    icon: "🐾",
+                    color: "#9C27B0",
+                    descripcion: "Residuos de mascotas (Estaciones en costanera)",
+                    ejemplos: [
+                        "Heces de perros",
+                        "Bolsitas con desechos",
+                        "Arena sanitaria de gatos",
+                        "Papel absorbente usado"
+                    ],
+                    recomendaciones: "Usar bolsitas biodegradables. Depositar en contenedores especiales de la costanera (cada 1km)."
+                }
+            ];
+            
+            container.innerHTML = residuosInfo.map(info => `
+                <div class="residuo-card">
+                    <div class="residuo-header">
+                        <div class="residuo-color-indicator" style="background: ${info.color};"></div>
+                        <div class="residuo-icon">${info.icon}</div>
+                        <div class="residuo-title" style="color: ${info.color};">${info.tipo}</div>
+                    </div>
+                    <div class="residuo-content">
+                        <div class="residuo-description">${info.descripcion}</div>
+                        <div class="residuo-examples">
+                            <h4>Ejemplos:</h4>
+                            <ul>
+                                ${info.ejemplos.map(ejemplo => `<li>• ${ejemplo}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="residuo-recommendations">
+                            <h4>Recomendaciones:</h4>
+                            <p>${info.recomendaciones}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Render points list
+        function renderPointsList() {
+            const container = document.getElementById('pointsList');
+            const localityFilter = document.getElementById('localityFilter').value;
+            const wasteFilter = document.getElementById('wasteFilter').value;
+            const availableFilter = document.getElementById('availableFilter').checked;
+            
+            let filteredPoints = points.filter(point => {
+                if (localityFilter !== 'all' && !point.id.startsWith(localityFilter)) return false;
+                if (wasteFilter !== 'all' && !point.wasteTypes.includes(wasteFilter)) return false;
+                
+                const avgCapacity = Object.values(point.capacities).reduce((a, b) => a + b, 0) / Object.keys(point.capacities).length;
+                if (availableFilter && avgCapacity >= 50) return false;
+                
+                return true;
+            });
+            
+            container.innerHTML = filteredPoints.map(point => {
+                const avgCapacity = Object.values(point.capacities).reduce((a, b) => a + b, 0) / Object.keys(point.capacities).length;
+                const freeCapacity = 100 - avgCapacity;
+                
+                let capacityClass = 'capacity-good';
+                if (point.isIFES) {
+                    capacityClass = 'pet-station'; // Use same golden style
+                } else if (point.isPetStation) {
+                    capacityClass = 'pet-station';
+                } else if (avgCapacity >= 80) {
+                    capacityClass = 'capacity-full';
+                } else if (avgCapacity >= 50) {
+                    capacityClass = 'capacity-medium';
+                }
+                
+                const icon = point.isIFES ? '⭐' : (point.isPetStation ? '🐾' : '📍');
+                
+                return `
+                    <div class="point-card ${!point.active && !point.isPetStation ? 'inactive' : capacityClass}" onclick="showPointDetail('${point.id}')">
+                        <div class="point-header">
+                            <div class="point-title">
+                                <div class="point-name">${icon} ${point.name}</div>
+                                <div class="point-address">📍 ${point.address}</div>
+                            </div>
+                            <div class="point-status ${point.active ? 'status-active' : 'status-inactive'}">
+                                ${point.active ? 'Activo' : 'Inactivo'}
+                            </div>
+                        </div>
+                        <div class="waste-types">
+                            ${point.wasteTypes.map(type => `
+                                <div class="waste-type ${type.toLowerCase().replace('á','a').replace('ó','o')}">
+                                    ${getWasteIcon(type)} ${type}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="capacity-section">
+                            <div class="capacity-header">
+                                <span class="capacity-label">Capacidad disponible</span>
+                                <span class="capacity-value">${freeCapacity.toFixed(1)}%</span>
+                            </div>
+                            <div class="capacity-bar">
+                                <div class="capacity-fill ${freeCapacity > 70 ? 'capacity-good' : freeCapacity > 30 ? 'capacity-medium' : 'capacity-full'}" style="width: ${freeCapacity}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Filter points
+        function filterPoints() {
+            renderPointsList();
+        }
+        
+        // Show point detail
+        function showPointDetail(pointId) {
+            const point = points.find(p => p.id === pointId);
+            if (!point) return;
+            
+            const avgCapacity = Object.values(point.capacities).reduce((a, b) => a + b, 0) / Object.keys(point.capacities).length;
+            const freeCapacity = 100 - avgCapacity;
+            const icon = point.isIFES ? '⭐' : (point.isPetStation ? '🐾' : '📍');
+            
+            document.getElementById('modalTitle').innerHTML = `${icon} ${point.name}`;
+            document.getElementById('modalBody').innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <p><strong>ID:</strong> ${point.id}</p>
+                    <p><strong>Dirección:</strong> ${point.address}</p>
+                    <p><strong>Coordenadas:</strong> ${point.lat.toFixed(4)}, ${point.lng.toFixed(4)}</p>
+                    <p><strong>Estado:</strong> ${point.active ? '✅ Activo' : '❌ Inactivo'}</p>
+                    <p><strong>Última rotación:</strong> ${point.lastRotation.toLocaleDateString()}</p>
+                    ${point.isIFES ? '<p style="color: #FFD700; font-weight: bold;">⭐ Estación Principal de Logística IFES</p>' : ''}
+                    ${point.isPetStation ? '<p style="color: #9C27B0; font-weight: bold;">🐾 Estación especial para residuos de mascotas</p>' : ''}
+                </div>
+                
+                <h3 style="margin: 20px 0 10px 0;">Capacidades por tipo de residuo:</h3>
+                ${Object.entries(point.capacities).map(([type, occupied]) => {
+                    const free = 100 - occupied;
+                    let capacityClass = 'capacity-good';
+                    let colorIndicator = '🟢';
+                    if (occupied >= 80) {
+                        capacityClass = 'capacity-full';
+                        colorIndicator = '🔴';
+                    } else if (occupied >= 50) {
+                        capacityClass = 'capacity-medium';
+                        colorIndicator = '🟡';
+                    }
+                    
+                    return `
+                        <div style="margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                <span>${getWasteIcon(type)} ${type}</span>
+                                <strong>${colorIndicator} ${free.toFixed(0)}% libre</strong>
+                            </div>
+                            <div class="capacity-bar">
+                                <div class="capacity-fill ${capacityClass}" style="width: ${free}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+                
+                <div style="margin-top: 20px; padding: 15px; background: ${freeCapacity < 30 ? '#FFEBEE' : '#E8F5E9'}; border-radius: 5px;">
+                    <strong>Capacidad promedio libre:</strong> ${freeCapacity.toFixed(1)}%<br>
+                    ${freeCapacity < 30 ? '⚠️ ATENCIÓN: Punto próximo a llenarse' : '✅ Buena disponibilidad'}
+                </div>
+                
+                <button onclick="navigateToPoint(${point.lat}, ${point.lng})" style="width: 100%; margin-top: 20px; padding: 10px; background: #2E7D32; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                    🧭 Navegar al punto
+                </button>
+            `;
+            
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        // Navigate to point
+        function navigateToPoint(lat, lng) {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+        
+        // Update statistics
+        function updateStatistics() {
+            const normalPoints = points.filter(p => !p.isPetStation);
+            const petPoints = points.filter(p => p.isPetStation);
+            const activePoints = points.filter(p => p.active);
+            const totalCapacity = activePoints.reduce((sum, p) => {
+                const avg = Object.values(p.capacities).reduce((a, b) => a + b, 0) / Object.keys(p.capacities).length;
+                return sum + (100 - avg);
+            }, 0);
+            const avgFreeCapacity = totalCapacity / activePoints.length;
+            const criticalPoints = activePoints.filter(p => {
+                const avg = Object.values(p.capacities).reduce((a, b) => a + b, 0) / Object.keys(p.capacities).length;
+                return avg >= 80;
+            });
+            
+            document.getElementById('totalPoints').textContent = points.length;
+            document.getElementById('activePoints').textContent = activePoints.length;
+            document.getElementById('avgCapacity').textContent = avgFreeCapacity.toFixed(1) + '%';
+            document.getElementById('criticalPoints').textContent = criticalPoints.length;
+            
+            // City statistics
+            const cityStats = {
+                'IFES Principal (2)': points.filter(p => p.id.startsWith('IFES')),
+                'Neuquén (10)': points.filter(p => p.id.startsWith('NQN')),
+                'Plottier (5)': points.filter(p => p.id.startsWith('PLO')),
+                'Centenario (5)': points.filter(p => p.id.startsWith('CEN')),
+                'Senillosa (5)': points.filter(p => p.id.startsWith('SEN')),
+                'Costanera - Mascotas (12)': points.filter(p => p.id.startsWith('PET'))
+            };
+            
+            document.getElementById('cityStats').innerHTML = `
+                <h2 style="margin: 30px 0 20px 0;">Estadísticas por Ciudad</h2>
+                ${Object.entries(cityStats).map(([city, cityPoints]) => {
+                    const active = cityPoints.filter(p => p.active).length;
+                    const avgCap = cityPoints.reduce((sum, p) => {
+                        const avg = Object.values(p.capacities).reduce((a, b) => a + b, 0) / Object.keys(p.capacities).length;
+                        return sum + (100 - avg);
+                    }, 0) / cityPoints.length;
+                    
+                    const isPetStation = city.includes('Mascotas');
+                    const isIFES = city.includes('IFES');
+                    
+                    return `
+                        <div class="stat-card">
+                            <h3>${isIFES ? '⭐ ' : (isPetStation ? '🐾 ' : '')}${city}</h3>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px;">
+                                <div>
+                                    <div class="stat-value" style="font-size: 1.5rem;">${cityPoints.length}</div>
+                                    <div class="stat-label">Puntos Totales</div>
+                                </div>
+                                <div>
+                                    <div class="stat-value" style="font-size: 1.5rem;">${active}</div>
+                                    <div class="stat-label">Activos</div>
+                                </div>
+                                <div style="grid-column: span 2;">
+                                    <div class="stat-value" style="font-size: 1.5rem;">${avgCap.toFixed(1)}%</div>
+                                    <div class="stat-label">Capacidad Promedio Libre</div>
+                                </div>
+                            </div>
+                            ${isIFES ? '<p style="margin-top: 10px; color: #FFD700; font-size: 0.9rem;">Estaciones principales de logística</p>' : ''}
+                            ${isPetStation ? '<p style="margin-top: 10px; color: #9C27B0; font-size: 0.9rem;">Estaciones cada 1km en la costanera</p>' : ''}
+                        </div>
+                    `;
+                }).join('')}
+            `;
+        }
+        
+        // Simulate capacity updates
+        function simulateCapacityUpdate() {
+            points.forEach(point => {
+                if (!point.isPetStation && !point.isIFES) { // Don't update pet stations or IFES randomly
+                    Object.keys(point.capacities).forEach(type => {
+                        const change = Math.random() * 10 - 3;
+                        point.capacities[type] = Math.max(10, Math.min(95, point.capacities[type] + change));
+                    });
+                }
+            });
+            
+            // Occasionally rotate points (not pet stations or IFES)
+            if (Math.random() > 0.9) {
+                const normalPoints = points.filter(p => !p.isPetStation && !p.isIFES);
+                const inactiveCount = Math.floor(Math.random() * 3) + 3;
+                normalPoints.forEach(p => p.active = true);
+                for (let i = 0; i < inactiveCount; i++) {
+                    const randomPoint = normalPoints[Math.floor(Math.random() * normalPoints.length)];
+                    randomPoint.active = false;
+                    randomPoint.lastRotation = new Date();
+                }
+            }
+            
+            // Update UI if visible
+            const activeTab = document.querySelector('.nav-tab.active').textContent.trim();
+            if (activeTab.includes('Puntos')) {
+                renderPointsList();
+            } else if (activeTab.includes('Estadísticas')) {
+                updateStatistics();
+            }
+            
+            // Update map markers
+            if (map) {
+                updateMapMarkers();
+            }
+        }
+        
+        // Initialize app
+        window.onload = function() {
+            initializePoints();
+            
+            // Initialize Google Maps with proper API key
+            const script = document.createElement('script');
+            // NOTA: Esta API key es para desarrollo. Para producción, usar tu propia key
+            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBHVyIiDKdV2e5SqzZQR7wvPuDrheJakKQ&callback=initMap&libraries=places`;
+            script.async = true;
+            script.defer = true;
+            document.body.appendChild(script);
+            
+            // Simulate updates every 30 seconds
+            setInterval(simulateCapacityUpdate, 30000);
+            
+            // Close modal on backdrop click
+            document.getElementById('detailModal').addEventListener('click', (e) => {
+                if (e.target.id === 'detailModal') {
+                    closeModal();
+                }
+            });
+        };
+    </script>
+</body>
+</html>
