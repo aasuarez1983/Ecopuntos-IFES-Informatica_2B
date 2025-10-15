@@ -2238,53 +2238,54 @@ Recordá: Cada pequeña acción cuenta para cuidar nuestro planeta 🌍`);
             localStorage.setItem('userBadges', JSON.stringify(userBadges));
         }
         
-        <script src="config.js"></script>
-<script>
-    // ✅ Cargar Google Maps dinámicamente usando la clave privada del archivo config.js
-    function loadGoogleMaps() {
-        if (typeof MAPS_API_KEY === "undefined" || MAPS_API_KEY === "") {
-            console.error("❌ No se encontró la clave MAPS_API_KEY en config.js");
-            return;
+           <!-- Configuración y carga dinámica de Google Maps -->
+    <script src="config.js"></script>
+    <script>
+        // ✅ Cargar Google Maps dinámicamente usando la clave privada del archivo config.js
+        function loadGoogleMaps() {
+            if (typeof MAPS_API_KEY === "undefined" || MAPS_API_KEY === "") {
+                console.error("❌ No se encontró la clave MAPS_API_KEY en config.js");
+                return;
+            }
+
+            // Evita cargar dos veces el script de Google Maps
+            if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+                console.log("🔁 Google Maps API ya cargada");
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+            console.log("✅ Google Maps API cargando...");
         }
 
-        // Evita cargar dos veces el script de Google Maps
-        if (document.querySelector('script[src*="maps.googleapis.com"]')) {
-            console.log("🔁 Google Maps API ya cargada");
-            return;
-        }
+        // ✅ UNIFICACIÓN COMPLETA de inicialización
+        window.onload = function() {
+            console.log("🌱 Iniciando EcoPuntos IFES...");
 
-        const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-        console.log("✅ Google Maps API cargando...");
-    }
+            // --- Inicialización general ---
+            initializePoints();
+            loadUserData();
 
-    // ✅ UNIFICACIÓN COMPLETA
-    window.onload = function() {
-        console.log("🌱 Iniciando EcoPuntos IFES...");
+            // --- Google Maps ---
+            setTimeout(loadGoogleMaps, 100);
 
-        // --- Inicialización general ---
-        initializePoints();
-        loadUserData();
+            // --- Actualizaciones automáticas ---
+            setInterval(simulateCapacityUpdate, 30000);
+            setInterval(saveUserData, 10000);
 
-        // --- Google Maps ---
-        setTimeout(loadGoogleMaps, 100);
+            // --- Cierre del modal ---
+            document.getElementById('detailModal').addEventListener('click', (e) => {
+                if (e.target.id === 'detailModal') closeModal();
+            });
 
-        // --- Actualizaciones automáticas ---
-        setInterval(simulateCapacityUpdate, 30000);
-        setInterval(saveUserData, 10000);
-
-        // --- Cierre del modal ---
-        document.getElementById('detailModal').addEventListener('click', (e) => {
-            if (e.target.id === 'detailModal') closeModal();
-        });
-
-        // --- Inicialización de interfaces si aplica ---
-        renderInfoTab();
-        updateStatistics();
-    };
-</script>
+            // --- Inicialización de interfaces ---
+            renderInfoTab();
+            updateStatistics();
+        };
+    </script>
 </body>
 </html>
