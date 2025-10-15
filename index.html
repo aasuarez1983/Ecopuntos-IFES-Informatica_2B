@@ -1943,26 +1943,7 @@
             document.getElementById('treesSaved').innerText = trees;
         }
         
-        // Initialize application
-        window.onload = function() {
-            // Initialize points
-            initializePoints();
-            
-            // Initialize map if Google Maps is loaded
-            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
-                setTimeout(() => {
-                    initMap();
-                }, 500);
-            }
-            
-            // Simulate updates every 30 seconds
-            setInterval(simulateCapacityUpdate, 30000);
-            
-            // Close modal on outside click
-            document.getElementById('detailModal').addEventListener('click', (e) => {
-                if (e.target.id === 'detailModal') closeModal();
-            });
-        };
+        
     </script>
     <!-- 🔑 Carga segura de Google Maps -->
 <script src="config.js"></script>
