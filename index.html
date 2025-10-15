@@ -1965,9 +1965,21 @@
         };
     </script>
     
-    <!-- Google Maps API Script -->
-    <script async defer 
-        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
-    </script>
+    <!-- 🔑 Carga segura de Google Maps -->
+<script src="config.js"></script>
+<script>
+  function loadGoogleMaps() {
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  window.onload = function () {
+    loadGoogleMaps();
+  };
+</script>
 </body>
 </html>
+
