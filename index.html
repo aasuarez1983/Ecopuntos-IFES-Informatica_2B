@@ -1679,14 +1679,7 @@
         window.onload = function() {
             initializePoints();
             
-            // Initialize Google Maps with proper API key
-            const script = document.createElement('script');
-            // NOTA: Esta API key es para desarrollo. Para producción, usar tu propia key
-            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBHVyIiDKdV2e5SqzZQR7wvPuDrheJakKQ&callback=initMap&libraries=places`;
-            script.async = true;
-            script.defer = true;
-            document.body.appendChild(script);
-            
+                  
             // Simulate updates every 30 seconds
             setInterval(simulateCapacityUpdate, 30000);
             
