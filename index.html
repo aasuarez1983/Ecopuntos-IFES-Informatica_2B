@@ -2238,38 +2238,7 @@ Recordá: Cada pequeña acción cuenta para cuidar nuestro planeta 🌍`);
             localStorage.setItem('userBadges', JSON.stringify(userBadges));
         }
         
-        // Initialize application
-        window.onload = function() {
-            // Initialize points
-            initializePoints();
-            
-            // Load user data
-            loadUserData();
-            
-            // Initialize map if Google Maps is loaded
-            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
-                setTimeout(() => {
-                    initMap();
-                }, 500);
-            }
-            
-            // Simulate updates every 30 seconds
-            setInterval(simulateCapacityUpdate, 30000);
-            
-            // Save user data periodically
-            setInterval(saveUserData, 10000);
-            
-            // Close modal on outside click
-            document.getElementById('detailModal').addEventListener('click', (e) => {
-                if (e.target.id === 'detailModal') closeModal();
-            });
-        };
-    </script>
-    
-<!-- Google Maps Configuration -->
-<script src="config.js"></script>
-
-<!-- Dynamic Google Maps API Loading -->
+        <script src="config.js"></script>
 <script>
     // ✅ Cargar Google Maps dinámicamente usando la clave privada del archivo config.js
     function loadGoogleMaps() {
@@ -2292,25 +2261,29 @@ Recordá: Cada pequeña acción cuenta para cuidar nuestro planeta 🌍`);
         console.log("✅ Google Maps API cargando...");
     }
 
-    // ✅ Inicialización principal de la aplicación (UNIFICADA)
+    // ✅ UNIFICACIÓN COMPLETA
     window.onload = function() {
         console.log("🌱 Iniciando EcoPuntos IFES...");
 
-        // Inicializar datos
+        // --- Inicialización general ---
         initializePoints();
         loadUserData();
 
-        // Simular actualizaciones automáticas
+        // --- Google Maps ---
+        setTimeout(loadGoogleMaps, 100);
+
+        // --- Actualizaciones automáticas ---
         setInterval(simulateCapacityUpdate, 30000);
         setInterval(saveUserData, 10000);
 
-        // Cerrar modal al hacer clic fuera
+        // --- Cierre del modal ---
         document.getElementById('detailModal').addEventListener('click', (e) => {
             if (e.target.id === 'detailModal') closeModal();
         });
 
-        // 🔥 Cargar Google Maps después de un breve retardo
-        setTimeout(loadGoogleMaps, 100);
+        // --- Inicialización de interfaces si aplica ---
+        renderInfoTab();
+        updateStatistics();
     };
 </script>
 </body>
