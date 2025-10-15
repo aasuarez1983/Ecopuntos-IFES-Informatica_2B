@@ -1964,10 +1964,10 @@
             });
         };
     </script>
-    
     <!-- 🔑 Carga segura de Google Maps -->
 <script src="config.js"></script>
 <script>
+  // Carga del script de Google Maps
   function loadGoogleMaps() {
     const script = document.createElement("script");
     script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
@@ -1976,10 +1976,17 @@
     document.head.appendChild(script);
   }
 
-  window.onload = function () {
-    loadGoogleMaps();
-  };
+  // Esperar al DOM y luego inicializar toda la app
+  document.addEventListener("DOMContentLoaded", () => {
+    initializePoints();     // genera los ecopuntos
+    loadGoogleMaps();       // carga el mapa
+    setInterval(simulateCapacityUpdate, 30000); // simula actualizaciones
+    document.getElementById("detailModal").addEventListener("click", (e) => {
+      if (e.target.id === "detailModal") closeModal();
+    });
+  });
 </script>
+   
 </body>
 </html>
 
