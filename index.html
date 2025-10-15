@@ -1698,5 +1698,19 @@
             });
         };
     </script>
+        <!-- Carga de configuración (clave API separada) -->
+    <script src="config.js"></script>
+
+    <!-- Carga dinámica de Google Maps con la clave protegida -->
+    <script>
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+    </script>
+</body>
+</html>
+
 </body>
 </html>
