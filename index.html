@@ -1742,17 +1742,82 @@
 <!-- 🌱 NUEVA SECCIÓN: ECOEDUCACIÓN + GREEN IFES MODULE 🌞 -->
 <!-- ====================================================== -->
 
-<!-- Nueva pestaña -->
 <script>
-document.querySelector('.nav-tabs').insertAdjacentHTML('beforeend', `
-  <button class="nav-tab" onclick="switchTab('edu')">
-    <span class="nav-tab-icon">🌿</span>
-    <span class="nav-tab-text">EcoEducación</span>
-  </button>
-`);
+window.onload = function() {
+  // ⚙️ Agregamos la pestaña solo cuando el DOM y las demás funciones están listas
+  document.querySelector('.nav-tabs').insertAdjacentHTML('beforeend', `
+    <button class="nav-tab" onclick="switchTab('edu')">
+      <span class="nav-tab-icon">🌿</span>
+      <span class="nav-tab-text">EcoEducación</span>
+    </button>
+  `);
+
+  // Inicializamos preguntas y renderizamos la primera
+  renderQuestion();
+};
+
+// ---------- Contenido educativo dinámico ----------
+function renderQuestion() {
+  const q = ecoQuestions[currentQ];
+  document.getElementById('quizQuestion').innerText = q.q;
+  document.getElementById('quizOptions').innerHTML = q.options
+    .map((opt, i) => `<div><input type='radio' name='opt' value='${i}'> ${opt}</div>`)
+    .join('');
+  document.getElementById('quizResult').innerText = "";
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="opt"]:checked');
+  if (!selected) return alert("Seleccioná una opción");
+  if (parseInt(selected.value) === ecoQuestions[currentQ].correct) {
+    score++;
+    document.getElementById('quizResult').innerText = "✅ ¡Correcto!";
+  } else {
+    document.getElementById('quizResult').innerText = "❌ Incorrecto.";
+  }
+  currentQ++;
+  if (currentQ < ecoQuestions.length) {
+    setTimeout(renderQuestion, 800);
+  } else {
+    setTimeout(() => {
+      document.getElementById('quizQuestion').innerText = "Resultado final:";
+      document.getElementById('quizOptions').innerHTML = "";
+      document.getElementById('quizResult').innerText =
+        `Tu puntuación verde: ${score}/${ecoQuestions.length} 🌿`;
+      currentQ = 0;
+      score = 0;
+    }, 800);
+  }
+}
+
+// ---------- Variables y preguntas del EcoQuiz ----------
+let currentQ = 0, score = 0;
+const ecoQuestions = [
+  { q: "¿Cuál de los siguientes residuos es reciclable?",
+    options: ["Cáscaras de banana", "Botellas plásticas limpias", "Restos de comida cocida"], correct: 1 },
+  { q: "¿Qué hacer con el aceite de cocina usado?",
+    options: ["Tirarlo por la pileta", "Reutilizarlo o llevarlo a un punto verde", "Dejarlo enfriar y tirarlo al tacho común"], correct: 1 },
+  { q: "¿Qué son los RAEE?",
+    options: ["Residuos Alimentarios Ecológicos", "Residuos de Aparatos Eléctricos y Electrónicos", "Restos Agrícolas y Energéticos"], correct: 1 },
+  { q: "¿Qué representa el color verde en los contenedores?",
+    options: ["Vidrio", "Papel y cartón", "Plástico"], correct: 0 }
+];
+
+// ---------- Módulo Green IFES ----------
+function simulateGreenIfes() {
+  const recycled = Math.floor(Math.random() * 500 + 500);
+  const energy = recycled * 0.75;     // kWh estimado
+  const co2 = recycled * 0.5;         // kg CO₂ evitado
+  const trees = Math.round(co2 / 20); // 1 árbol = 20 kg CO₂/año
+  
+  document.getElementById('recycledKg').innerText = recycled;
+  document.getElementById('energySaved').innerText = energy.toFixed(1);
+  document.getElementById('co2Saved').innerText = co2.toFixed(1);
+  document.getElementById('treesSaved').innerText = trees;
+}
 </script>
 
-<!-- Contenido Educativo -->
+<!-- Contenido HTML de la pestaña -->
 <div id="eduContent" class="content">
   <div class="info-container">
     <h1 class="info-title">🌍 EcoEducación IFES</h1>
@@ -1760,7 +1825,6 @@ document.querySelector('.nav-tabs').insertAdjacentHTML('beforeend', `
       Poné a prueba tus conocimientos ecológicos y descubrí cómo el IFES contribuye al ahorro energético.
     </p>
 
-    <!-- Quiz Interactivo -->
     <div id="ecoQuiz" class="residuo-card">
       <h3>♻️ EcoQuiz - Desafío Verde</h3>
       <p id="quizQuestion" style="font-weight:bold; margin-top:10px;"></p>
@@ -1769,7 +1833,6 @@ document.querySelector('.nav-tabs').insertAdjacentHTML('beforeend', `
       <p id="quizResult" style="margin-top:10px; font-weight:bold;"></p>
     </div>
 
-    <!-- Módulo de Energía -->
     <div id="greenIfes" class="residuo-card" style="margin-top:25px;">
       <h3>☀️ Programa Green IFES Campus</h3>
       <p>El IFES promueve una gestión sustentable de residuos que ayuda a reducir el consumo energético del campus.</p>
@@ -1786,78 +1849,6 @@ document.querySelector('.nav-tabs').insertAdjacentHTML('beforeend', `
     </div>
   </div>
 </div>
-
-<!-- JS para Quiz + Green IFES -->
-<script>
-let currentQ = 0, score = 0;
-const ecoQuestions = [
-  {
-    q: "¿Cuál de los siguientes residuos es reciclable?",
-    options: ["Cáscaras de banana", "Botellas plásticas limpias", "Restos de comida cocida"],
-    correct: 1
-  },
-  {
-    q: "¿Qué hacer con el aceite de cocina usado?",
-    options: ["Tirarlo por la pileta", "Reutilizarlo o llevarlo a un punto verde", "Dejarlo enfriar y tirarlo al tacho común"],
-    correct: 1
-  },
-  {
-    q: "¿Qué son los RAEE?",
-    options: ["Residuos Alimentarios Ecológicos", "Residuos de Aparatos Eléctricos y Electrónicos", "Restos Agrícolas y Energéticos"],
-    correct: 1
-  },
-  {
-    q: "¿Qué representa el color verde en los contenedores?",
-    options: ["Vidrio", "Papel y cartón", "Plástico"],
-    correct: 0
-  }
-];
-
-function renderQuestion() {
-  const q = ecoQuestions[currentQ];
-  document.getElementById('quizQuestion').innerText = q.q;
-  document.getElementById('quizOptions').innerHTML = q.options.map((opt, i) =>
-    `<div><input type='radio' name='opt' value='${i}'> ${opt}</div>`
-  ).join('');
-  document.getElementById('quizResult').innerText = "";
-}
-function nextQuestion() {
-  const selected = document.querySelector('input[name="opt"]:checked');
-  if (!selected) return alert("Seleccioná una opción");
-  if (parseInt(selected.value) === ecoQuestions[currentQ].correct) {
-    score++;
-    document.getElementById('quizResult').innerText = "✅ ¡Correcto!";
-  } else {
-    document.getElementById('quizResult').innerText = "❌ Incorrecto.";
-  }
-  currentQ++;
-  if (currentQ < ecoQuestions.length) {
-    setTimeout(renderQuestion, 1000);
-  } else {
-    setTimeout(() => {
-      document.getElementById('quizQuestion').innerText = "Resultado final:";
-      document.getElementById('quizOptions').innerHTML = "";
-      document.getElementById('quizResult').innerText = `Tu puntuación verde: ${score}/${ecoQuestions.length} 🌿`;
-      currentQ = 0;
-      score = 0;
-    }, 1000);
-  }
-}
-renderQuestion();
-
-function simulateGreenIfes() {
-  // Simulación de métricas ecológicas
-  const recycled = Math.floor(Math.random() * 500 + 500);
-  const energy = recycled * 0.75;     // kWh estimado
-  const co2 = recycled * 0.5;         // kg CO₂ evitado
-  const trees = Math.round(co2 / 20); // 1 árbol = 20 kg CO₂/año
-  
-  document.getElementById('recycledKg').innerText = recycled;
-  document.getElementById('energySaved').innerText = energy.toFixed(1);
-  document.getElementById('co2Saved').innerText = co2.toFixed(1);
-  document.getElementById('treesSaved').innerText = trees;
-}
-</script>
 
 </body>
 </html>
