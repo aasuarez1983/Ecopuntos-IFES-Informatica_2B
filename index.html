@@ -1711,46 +1711,42 @@
             }
         }
         
-        // Initialize app
-        window.onload = function() {
-            initializePoints();
-            
-                  
-            // Simulate updates every 30 seconds
-            setInterval(simulateCapacityUpdate, 30000);
-            
-            // Close modal on backdrop click
-            document.getElementById('detailModal').addEventListener('click', (e) => {
-                if (e.target.id === 'detailModal') {
-                    closeModal();
-                }
-            });
-        };
-    </script>
-        <!-- Carga de configuración (clave API separada) -->
-    <script src="config.js"></script>
-
-    <!-- Carga dinámica de Google Maps con la clave protegida -->
-    <script>
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      document.body.appendChild(script);
-    </script>
-    <!-- ====================================================== -->
-<!-- 🌱 NUEVA SECCIÓN: ECOEDUCACIÓN + GREEN IFES MODULE 🌞 -->
+        <!-- ====================================================== -->
+<!-- 🌱 CARGA UNIFICADA DE INICIALIZACIÓN -->
 <!-- ====================================================== -->
-
 <script>
 window.onload = function() {
-  // ⚙️ Agregamos la pestaña solo cuando el DOM y las demás funciones están listas
+  // Inicializa puntos y mapa
+  initializePoints();
+
+  // Si Google Maps está listo, inicializa el mapa
+  if (typeof initMap === "function") {
+    setTimeout(() => {
+      initMap();
+    }, 500);
+  }
+
+  // Simula actualizaciones cada 30 segundos
+  setInterval(simulateCapacityUpdate, 30000);
+
+  // Cierra modal al hacer clic fuera
+  document.getElementById('detailModal').addEventListener('click', (e) => {
+    if (e.target.id === 'detailModal') closeModal();
+  });
+
+  // Agrega la pestaña EcoEducación
   document.querySelector('.nav-tabs').insertAdjacentHTML('beforeend', `
     <button class="nav-tab" onclick="switchTab('edu')">
       <span class="nav-tab-icon">🌿</span>
       <span class="nav-tab-text">EcoEducación</span>
     </button>
   `);
+
+  // Inicia el quiz educativo
+  renderQuestion();
+};
+</script>
+
 
   // Inicializamos preguntas y renderizamos la primera
   renderQuestion();
