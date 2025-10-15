@@ -1850,9 +1850,42 @@
         };
     </script>
     
-    <!-- Google Maps API Script -->
-    <script async defer 
-        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
-    </script>
+    <!-- ====================================================== -->
+<!-- 🔑 Configuración de Google Maps -->
+<!-- ====================================================== -->
+<script src="config.js"></script>
+
+<!-- ====================================================== -->
+<!-- 🗺️ Carga dinámica de la API de Google Maps -->
+<!-- ====================================================== -->
+<script>
+  function loadGoogleMaps() {
+    if (typeof MAPS_API_KEY === "undefined" || MAPS_API_KEY === "") {
+      console.error("❌ No se encontró la clave MAPS_API_KEY en config.js");
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  // Llamar automáticamente cuando carga la página
+  window.onload = function() {
+    initializePoints(); // carga tus puntos
+    loadGoogleMaps();   // carga dinámica del mapa
+    setInterval(simulateCapacityUpdate, 30000);
+
+    // Cierra modal al hacer clic fuera
+    document.getElementById('detailModal').addEventListener('click', (e) => {
+      if (e.target.id === 'detailModal') closeModal();
+    });
+  };
+</script>
+
+</body>
+</html>
+
 </body>
 </html>
